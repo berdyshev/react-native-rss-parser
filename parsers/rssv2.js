@@ -119,10 +119,24 @@ const getItemPublished = (node) =>
 const getItemEnclosures = (node) => {
   const enclosures = utils.getChildElements(node, 'enclosure');
 
-  return enclosures.map((enclosure) => ({
-    url: enclosure.getAttribute('url'),
-    length: enclosure.getAttribute('length'),
-    mimeType: enclosure.getAttribute('type'),
+  return enclosures.length
+    ? enclosures.map((enclosure) => ({
+        url: enclosure.getAttribute('url'),
+        length: enclosure.getAttribute('length'),
+        mimeType: enclosure.getAttribute('type'),
+      }))
+    : getMediaContent(node);
+};
+
+const getMediaContent = (node) => {
+  const media = utils.getChildElements(node, 'media:content');
+
+  return media.map((item) => ({
+    url: item.getAttribute('url'),
+    height: parseInt(item.getAttribute('height'), 10) || 0,
+    width: parseInt(item.getAttribute('width'), 10) || 0,
+    mimeType: item.getAttribute('type'),
+    description: utils.getElementTextContent(item, 'media:description'),
   }));
 };
 
